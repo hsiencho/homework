@@ -12,8 +12,7 @@ import numpy as np
 import numpy.linalg as la
 import matplotlib.pyplot as plt
 import pandas as pd
-from sklearn.linear_model import LogisticRegression
-
+from sklearn.svm import SVC
 
 hw8_csv = pd.read_csv('data/hw8.csv')
 hw8_dataset = hw8_csv.to_numpy(dtype = np.float64)
@@ -21,7 +20,7 @@ hw8_dataset = hw8_csv.to_numpy(dtype = np.float64)
 X0 = hw8_dataset[:, 0:2]
 y = hw8_dataset[:, 2]
 
-model = LogisticRegression()
+model = SVC(kernel = 'rbf', C = 1.0, gamma = 0.1)
 model.fit(X0, y)
 
 x_min, x_max = X0[:, 0].min() - 1, X0[:, 0].max() + 1
@@ -34,14 +33,13 @@ Z = model.predict(grid_points)
 Z = Z.reshape(xx.shape)
 
 fig = plt.figure(dpi=288)
-plt.scatter(X0[y == 1, 0], X0[y == 1, 1], color='r', label='$\omega_1$')
-plt.scatter(X0[y == -1, 0], X0[y == -1, 1], color='b', label='$\omega_2$')
+plt.plot(X0[y == 1, 0], X0[y == 1, 1], 'r.', label='$\omega_1$')
+plt.plot(X0[y == -1, 0], X0[y == -1, 1], 'b.', label='$\omega_2$')
 plt.xlabel('$x_1$')
 plt.ylabel('$x_2$')
 plt.title('Data Distribution')
 plt.axis('equal')
 plt.legend()
-plt.grid(True)
 plt.show()
 
 fig = plt.figure(dpi=288)
@@ -50,7 +48,7 @@ plt.plot(X0[y == 1, 0], X0[y == 1, 1], 'r.', label='$\omega_1$')
 plt.plot(X0[y == -1, 0], X0[y == -1, 1], 'b.', label='$\omega_2$')
 plt.xlabel('$x_1$')
 plt.ylabel('$x_2$')
+plt.title('Data Distribution')
 plt.axis('equal')
 plt.legend()
 plt.show()
-
