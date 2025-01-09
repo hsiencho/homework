@@ -5,8 +5,8 @@ Created on Mon Apr 12 10:04:38 2021
 @author: htchen
 """
 
-#from IPython import get_ipython
-#get_ipython().run_line_magic('reset', '-sf')
+# from IPython import get_ipython
+# get_ipython().run_line_magic('reset', '-sf')
 
 import math
 import numpy as np
@@ -49,8 +49,11 @@ m2 = np.mean(X2, axis = 0, keepdims=1)
 S1 = (X1 - m1).T @ (X1 - m1)
 S2 = (X2 - m2).T @ (X2 - m2)
 Sw = S1 + S2
+Sb = (m1 - m2).T @ (m1 - m2)
 
-w = np.linalg.inv(Sw) @ (m2 - m1).T
+eigvals, eigvecs = myeig(np.linalg.inv(Sw) @ Sb)
+
+w = eigvecs[:, 0]
 
 w /= np.linalg.norm(w)
 
@@ -58,11 +61,11 @@ X1_proj = X1 @ w
 X2_proj = X2 @ w
 
 plt.figure(dpi=288)
-plt.scatter(X1[:, 0], X1[:, 1], color='red', alpha=0.5, label='Class 1')
-plt.scatter(X2[:, 0], X2[:, 1], color='green', alpha=0.5, label='Class 2')
+plt.plot(X1[:, 0], X1[:, 1], 'ro', label='Class 1', markersize=3)
+plt.plot(X2[:, 0], X2[:, 1], 'go', label='Class 2', markersize=3)
 
-proj_line = np.linspace(-2, 5, 100).reshape(-1, 1) @ w.T
-plt.plot(proj_line[:, 0], proj_line[:, 1], 'b-', label='LDA Projection Line')
+plt.plot(X1_proj * w[0], X1_proj * w[1], 'ro', label='Class 1 Proj', markersize=3)
+plt.plot(X2_proj * w[0], X2_proj * w[1], 'go', label='Class 2 Proj', markersize=3)
 
 plt.title('LDA Projection in 2D Space')
 plt.legend()
